@@ -1,65 +1,102 @@
-// create a new router
-const app = require("express").Router();
+// Create the category router and import the model and the token check
+const router = require("express").Router();
+const { Category } = require("../models");
+const { authMiddleware } = require("../utils/auth");
 
-// import the models
-const { Category } = require("../models/index");
-
-// Route to add a new post
-app.post("/", async (req, res) => {
+// Get every category. The front end uses this to build the filter menu
+router.get("/", async (req, res) => {
   try {
-    const { category_name } = req.body;
-    const category = await Category.create({ category_name });
+    const categories = await Category.findAll({
+      order: [["category_name", "ASC"]],
+    });
+
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({
+      message: "Unable to retrieve categories",
+      error: error.message,
+    });
+  }
+});
+
+// Get one category by its id
+router.get("/:id", async (req, res) => {
+  try {
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ message: "No category found with this id" });
+    }
+
+    res.status(200).json(category);
+  } catch (error) {
+    res.status(500).json({
+      message: "Unable to retrieve category",
+      error: error.message,
+    });
+  }
+});
+
+// Create a category. Only a logged-in user can do this
+router.post("/", authMiddleware, async (req, res) => {
+  try {
+    const category = await Category.create({
+      category_name: req.body.category_name,
+    });
+
     res.status(201).json(category);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error adding category", error: error });
+    res.status(400).json({
+      message: "Unable to create category",
+      error: error.message,
+    });
   }
 });
 
-// Route to get all posts
-app.get("/", async (req, res) => {
+// Rename a category. Only a logged-in user can do this
+router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    console.log("Getting all categories");
-    const categories = await Category.findAll();
-    console.log(categories);
-    res.json(categories);
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ message: "No category found with this id" });
+    }
+
+    await category.update({ category_name: req.body.category_name });
+
+    res.status(200).json(category);
   } catch (error) {
-    res.status(500).json({ message: "Error adding categories", error: error });
+    res.status(400).json({
+      message: "Unable to update category",
+      error: error.message,
+    });
   }
 });
 
-app.get("/:id", async (req, res) => {
+// Delete a category. Only a logged-in user can do this
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const category = await Post.findByPk(req.params.id);
-    res.json(category);
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ message: "No category found with this id" });
+    }
+
+    await category.destroy();
+
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ error: "Error retrieving category" });
+    res.status(500).json({
+      message: "Unable to delete category",
+      error: error.message,
+    });
   }
 });
 
-// Route to update a category
-app.put("/:id", async (req, res) => {
-  try {
-    const { name } = req.body;
-    const post = await Category.update(
-      { name },
-      { where: { id: req.params.id } }
-    );
-    res.json(post);
-  } catch (error) {
-    res.status(500).json({ error: "Error updating category" });
-  }
-});
-
-// Route to delete a category
-app.delete("//:id", async (req, res) => {
-  try {
-    const category = await Category.destroy({ where: { id: req.params.id } });
-    res.json(category);
-  } catch (error) {
-    res.status(500).json({ error: "Error deleting category" });
-  }
-});
-
-// export the router
-module.exports = app;
+module.exports = router;
