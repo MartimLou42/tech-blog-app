@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Registration</title>
+    <title>Tech Blog</title>
     <link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body>
+    <h1>Tech Blog</h1>
+
+    <!-- Register and log in. This is hidden after the user logs in -->
     <div class="container" id="auth-container">
         <h2>Register</h2>
         <input type="text" id="username" placeholder="Username">
@@ -22,17 +25,23 @@
         <button onclick="login()">Login</button>
     </div>
 
+    <!-- Write a new post. This is hidden until the user logs in -->
     <div class="container hidden" id="app-container">
-        <h2>Welcome</h2>
+        <h2>Welcome, <span id="current-username"></span></h2>
         <button onclick="logout()">Logout</button>
         <hr>
         <h2>Create a Post</h2>
         <input type="text" id="post-title" placeholder="Title">
         <textarea id="post-content" placeholder="Content"></textarea>
+        <select id="post-category"></select>
         <button onclick="createPost()">Submit Post</button>
-        <hr>
+    </div>
+
+    <!-- Anybody can read the posts, with or without an account -->
+    <div class="container">
         <h2>Posts</h2>
-        <button onclick="fetchPosts()">Load Posts</button>
+        <label for="filter-category">Filter by category</label>
+        <select id="filter-category" onchange="fetchPosts()"></select>
         <div id="posts"></div>
     </div>
 
