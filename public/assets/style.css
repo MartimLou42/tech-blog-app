@@ -69,3 +69,12 @@ input[type="submit"] {
   padding: 6px 16px;
   cursor: pointer;
 }
+
+/* The message line under the title. It replaces the browser pop-up box */
+#message {
+  max-width: 400px;
+  min-height: 20px;
+  margin: 0 auto 12px auto;
+  color: #206b67;
+  font-weight: bold;
+}
