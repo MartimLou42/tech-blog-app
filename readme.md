@@ -1,91 +1,94 @@
-# Full Stack Application with Node, Express, Sequelize, and Authentication
+# Tech Blog
 
-## Challenge
+A blogging platform where anyone can read posts and filter them by category, and registered users can write, edit and delete their own posts.
 
-In this challenge, you have a full stack application built with **Node.js**, **Express**, **Sequelize**, and **JWT authentication**. The code is structured into logical folders using modules.
+- **Live app:** _add the Render URL here_
+- **Repository:** https://github.com/MartimLou42/tech-blog-app
+- **Demo video:** _add the video link here_
 
-Your challenge is to:
+## Features
 
-1. **Get the application running** following the installation steps.
-2. **Test the application** to ensure it works as expected.
-3. **Answer the following questions:**
+- Register, log in and log out using JWT authentication.
+- Passwords are hashed with bcrypt.
+- Anyone can read posts, with or without an account.
+- Filter posts by category.
+- Create, edit and delete posts. The server only lets you touch your own.
+- The page updates from API responses without reloading.
 
-   - What is happening in `models/index.js`?
-   - In `models/user.js`, there are hooks at the bottom of the model definition. What do these do?
-   - Where are all the routes for the API defined?
-   - If you wanted to create a new route called `/api/students`, which file(s) would you need to update?
-   - If you had additional data besides user data that you'd like to store in the JWT, how could you do that? Which file would you need to update?
+## Built with
 
-## Key Learnings
+Node.js, Express, Sequelize, MySQL, JSON Web Tokens, bcrypt, and a plain HTML/CSS/JavaScript front end.
 
-- How a full stack application using **Node.js, Express, Sequelize, and JWT authentication** is structured.
-- The complete **JWT authentication lifecycle**, including signing and route protection.
-- How Sequelize models, hooks, and associations work.
-- How to modify and extend a full stack application by adding new routes and modifying authentication.
+## Folder structure
 
-## User Story
-
-_As a developer, I want to understand how a full stack application is structured, how authentication is handled, and how I can extend the application by adding new routes and modifying JWT payloads._
-
-## Acceptance Criteria
-
-1. The application should run successfully after following the installation steps.
-2. You should be able to test authentication and protected routes.
-3. You should be able to explain the structure and purpose of key files such as `models/index.js`, `models/user.js`, and the route definitions.
-4. You should be able to describe how to:
-   - Add a new API route (`/api/students`).
-   - Modify the JWT payload to include additional data.
-
-## Getting Started
-
-### Installation Steps
-
-1. **Copy the `.env.example` file** and rename it to `.env`.
-2. **Open MySQL in the terminal:**
-
-```bash
-mysql -u root -p
+```text
+config/     database connection
+db/         SQL to create the database
+models/     User, Post and Category, plus their associations
+routes/     the /api endpoints
+seeds/      sample data
+utils/      JWT signing and route protection
+public/     the front end
+server.js   starts the app
 ```
 
-3. **Run the following command to set up the database:**
+## Run it locally
 
-```bash
-source db/schema.sql;
-```
+You need Node.js and MySQL installed.
 
-4. **Exit MySQL**
+1. Clone the repo and install the packages.
 
-```bash
-quit;
-```
+   ```bash
+   git clone https://github.com/MartimLou42/tech-blog-app.git
+   cd tech-blog-app
+   npm install
+   ```
 
-5. **Update the .env file and set DB_PASSWORD to your MySQL password.**
-6. **Install dependencies**
+2. Copy `.env.example` to `.env`, then fill in your MySQL password and pick any long random string for `JWT_SECRET`.
 
-```bash
-npm install
-```
+3. Create the database.
 
-7. **Seed the database with test data:**
+   ```bash
+   mysql -u root -p
+   ```
 
-```bash
-npm run seed
-```
+   ```sql
+   source db/schema.sql;
+   quit;
+   ```
 
-8. **Run the application**
+4. Add the sample data and start the app.
 
-```bash
-npm start
-```
+   ```bash
+   npm run seed
+   npm start
+   ```
 
-9. **Open the application in your browser:**
+5. Open http://localhost:3001
 
-```browser
-http://localhost:3001
-```
+The seed creates two accounts, `test1@example.com` and `test2@example.com`. Both use the password `password123`.
 
-## Resources
+## Environment variables
 
-- [Express Documentation](https://expressjs.com/)
-- [Sequelize Documentation](https://sequelize.org/)
-- [jsonwebtoken (JWT) Package](https://www.npmjs.com/package/jsonwebtoken)
+`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_HOST`, `DB_DIALECT`, `DB_PORT` and `JWT_SECRET`.
+
+A hosted database also needs `DB_SSL=true` and `DB_CA_CERT` set to the certificate text. `.env` is git-ignored.
+
+## Deploy to Render
+
+Render has no free MySQL, so the database is hosted separately.
+
+1. Create a free MySQL service at https://aiven.io. Copy the connection details and download the CA certificate.
+2. Point your local `.env` at that database, run `npm run seed` once, then change it back.
+3. On https://render.com, create a **Web Service** from this repo.
+   - Build command: `npm install`
+   - Start command: `npm start`
+   - Instance type: Free
+4. Add the environment variables above, plus `DB_SSL=true` and `DB_CA_CERT`. Leave `PORT` alone, Render sets it.
+5. Deploy. Render redeploys on every push to `main`.
+
+The free instance sleeps when idle, so the first request after a pause is slow.
+
+## Author
+
+Martim Lou
