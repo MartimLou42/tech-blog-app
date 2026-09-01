@@ -1,80 +1,333 @@
+/* ---------- Design tokens ---------- */
+:root {
+  --green: #08352b;
+  --cream: #fffef4;
+  --coral: #ff412e;
+  --ink: #15171a;
+  --muted: #5f6b66;
+  --rule: #e3e0d2;
+
+  --sans: "Raleway", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Libre Baskerville", Georgia, serif;
+}
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  text-align: center;
   margin: 0;
+  padding: 24px 16px;
+  background: var(--green);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  background: var(--cream);
+  padding: 48px 40px 32px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* This must beat the display rules on the sections it hides */
+.hidden {
+  display: none !important;
+}
+
+/* ---------- Masthead ---------- */
+.masthead {
+  text-align: center;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 24px;
+  margin-bottom: 8px;
+}
+
+.logo {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--coral);
+  margin: 0;
+}
+
+.tagline {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
+/* ---------- Message line ---------- */
+#message {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--coral);
+  text-align: center;
+  min-height: 22px;
+  margin: 16px 0 0;
+}
+
+/* ---------- Account panels ---------- */
+.account {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 24px 0 48px;
+}
+
+.account-box {
+  border: 2px solid var(--ink);
   padding: 20px;
 }
 
-.container {
-  max-width: 400px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.account-box.wide {
+  grid-column: 1 / -1;
+}
+
+.account-box h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+.writer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.writer-bar h2 {
+  margin: 0;
+}
+
+#current-username {
+  color: var(--coral);
 }
 
 input,
-button {
-  width: 90%;
-  margin: 10px 0;
-  padding: 10px;
-}
-
-input[type="text"],
-select,
-textarea {
+textarea,
+select {
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-top: 6px;
-  margin-bottom: 10px;
+  font-family: var(--serif);
+  font-size: 15px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: var(--cream);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 0;
 }
 
-input[type="submit"] {
-  border: none;
-  background: #4aaaa5;
-  padding: 12px 20px;
-  border-radius: 4px;
+textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--coral);
+  outline-offset: 1px;
+}
+
+.button {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 11px 22px;
+  background: var(--coral);
+  color: var(--cream);
+  border: 2px solid var(--coral);
   cursor: pointer;
-  color: #ffffff;
-  font-size: 16px;
 }
 
-.hidden {
-  display: none;
+.button:hover {
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
-/* One block for each post, with the two buttons side by side underneath */
-#posts > div {
-  border-top: 1px solid #e4e4e4;
-  padding: 12px 0;
-  text-align: left;
+.button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ink);
+  padding: 7px 14px;
+  font-size: 12px;
 }
 
-#posts h3 {
-  margin: 0 0 6px 0;
+.button.ghost:hover {
+  background: var(--ink);
+  color: var(--cream);
 }
 
-#posts small {
-  display: block;
-  color: #777;
+/* ---------- Reviews ---------- */
+.reviews-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 12px;
+  margin-bottom: 28px;
 }
 
-#posts button {
+.reviews-head h2 {
+  font-size: 26px;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter label {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.filter select {
   width: auto;
-  margin: 10px 8px 0 0;
-  padding: 6px 16px;
-  cursor: pointer;
+  min-width: 170px;
+  margin-bottom: 0;
 }
 
-/* The message line under the title. It replaces the browser pop-up box */
-#message {
-  max-width: 400px;
-  min-height: 20px;
-  margin: 0 auto 12px auto;
-  color: #206b67;
-  font-weight: bold;
+#posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 32px 28px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-cover {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: var(--ink);
+  margin-bottom: 14px;
+}
+
+.card-meta {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.card-title {
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--coral);
+  margin: 0 0 10px;
+}
+
+.card-excerpt {
+  font-size: 15px;
+  margin: 0;
+  color: #3b423f;
+}
+
+.card-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card-actions .question {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--coral);
+  width: 100%;
+}
+
+.empty {
+  font-family: var(--sans);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* The edit form sits inside the card, in place of the review */
+.card.editing {
+  border: 2px solid var(--coral);
+  padding: 16px;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  margin-top: 56px;
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 700px) {
+  .page {
+    padding: 32px 20px 24px;
+  }
+
+  .logo {
+    font-size: 40px;
+  }
+
+  .account {
+    grid-template-columns: 1fr;
+  }
+
+  .reviews-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

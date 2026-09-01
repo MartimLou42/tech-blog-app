@@ -4,48 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech Blog</title>
+    <title>RESPAWN | Game reviews</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:wght@600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body>
-    <h1>Tech Blog</h1>
+    <div class="page">
 
-    <!-- Messages appear here instead of in a browser pop-up box -->
-    <p id="message"></p>
+        <header class="masthead">
+            <p class="logo">RESPAWN</p>
+            <p class="tagline">Game reviews by people who actually finished them.</p>
+        </header>
 
-    <!-- Register and log in. This is hidden after the user logs in -->
-    <div class="container" id="auth-container">
-        <h2>Register</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="register()">Register</button>
-        <hr>
-        <h2>Login</h2>
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <button onclick="login()">Login</button>
-    </div>
+        <!-- Messages appear here instead of in a browser pop-up box -->
+        <p id="message"></p>
 
-    <!-- Write a new post. This is hidden until the user logs in -->
-    <div class="container hidden" id="app-container">
-        <h2>Welcome, <span id="current-username"></span></h2>
-        <button onclick="logout()">Logout</button>
-        <hr>
-        <h2>Create a Post</h2>
-        <input type="text" id="post-title" placeholder="Title">
-        <textarea id="post-content" placeholder="Content"></textarea>
-        <select id="post-category"></select>
-        <button onclick="createPost()">Submit Post</button>
-    </div>
+        <!-- Register and log in. This is hidden after the user logs in -->
+        <section class="account" id="auth-container">
+            <div class="account-box">
+                <h2>Join the desk</h2>
+                <input type="text" id="username" placeholder="Username">
+                <input type="email" id="email" placeholder="Email">
+                <input type="password" id="password" placeholder="Password, 8 characters or more">
+                <button class="button" onclick="register()">Register</button>
+            </div>
+            <div class="account-box">
+                <h2>Sign in</h2>
+                <input type="email" id="login-email" placeholder="Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <button class="button" onclick="login()">Login</button>
+            </div>
+        </section>
 
-    <!-- Anybody can read the posts, with or without an account -->
-    <div class="container">
-        <h2>Posts</h2>
-        <label for="filter-category">Filter by category</label>
-        <select id="filter-category" onchange="fetchPosts()"></select>
-        <div id="posts"></div>
+        <!-- Write a new review. This is hidden until the user logs in -->
+        <section class="account hidden" id="app-container">
+            <div class="account-box wide">
+                <div class="writer-bar">
+                    <h2>Filing as <span id="current-username"></span></h2>
+                    <button class="button ghost" onclick="logout()">Log out</button>
+                </div>
+                <input type="text" id="post-title" placeholder="Headline">
+                <textarea id="post-content" placeholder="What did you actually think?"></textarea>
+                <select id="post-category"></select>
+                <button class="button" onclick="createPost()">Publish review</button>
+            </div>
+        </section>
+
+        <!-- Anybody can read the reviews, with or without an account -->
+        <section class="reviews">
+            <div class="reviews-head">
+                <h2>Latest reviews</h2>
+                <div class="filter">
+                    <label for="filter-category">Genre</label>
+                    <select id="filter-category" onchange="fetchPosts()"></select>
+                </div>
+            </div>
+            <div id="posts"></div>
+        </section>
+
+        <footer class="site-footer">
+            <p>RESPAWN &middot; built with Node, Express, Sequelize and MySQL</p>
+        </footer>
+
     </div>
 
     <script src="./assets/script.js"></script>

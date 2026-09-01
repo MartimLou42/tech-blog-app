@@ -13,17 +13,32 @@ let categories = [];
 let editingPostId = null;
 let confirmingDeleteId = null;
 
+// A review has no picture, so each genre gets its own colour block instead
+const COVER_COLOURS = ["#ff412e", "#1d7a6b", "#e8b33c", "#6c5ce7", "#2f6f9f"];
+
 // Write a line at the top of the page. This replaces the browser alert box
 function showMessage(text) {
   document.getElementById("message").textContent = text;
 }
 
-// Build a button. Every button in the post list is made here
-function makeButton(label, whenClicked) {
+// Build a button. Every button in the review list is made here
+function makeButton(label, className, whenClicked) {
   const button = document.createElement("button");
+  button.className = className;
   button.textContent = label;
   button.onclick = whenClicked;
   return button;
+}
+
+// Turn a date into the short newspaper form, for example 12 AUG 2026
+function formatDate(value) {
+  return new Date(value)
+    .toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+    .toUpperCase();
 }
 
 // Build the headers for a request. Add the token only when a user is logged in
@@ -75,7 +90,7 @@ async function register() {
     return;
   }
 
-  showMessage("Account created. You can log in now.");
+  showMessage("Account created. You can sign in now.");
 }
 
 // Log in and keep the token inside the browser
@@ -99,7 +114,7 @@ async function login() {
   token = data.token;
   localStorage.setItem("authToken", token);
   showLoggedIn(data.user);
-  showMessage(`Logged in as ${data.user.username}.`);
+  showMessage(`Signed in as ${data.user.username}.`);
   fetchPosts();
 }
 
@@ -111,7 +126,7 @@ async function logout() {
   });
 
   showLoggedOut();
-  showMessage("Logged out.");
+  showMessage("Signed out.");
   fetchPosts();
 }
 
@@ -123,8 +138,8 @@ async function loadCategories() {
   const filterMenu = document.getElementById("filter-category");
   const postMenu = document.getElementById("post-category");
 
-  filterMenu.innerHTML = '<option value="">All categories</option>';
-  postMenu.innerHTML = '<option value="">Choose a category</option>';
+  filterMenu.innerHTML = '<option value="">All genres</option>';
+  postMenu.innerHTML = '<option value="">Choose a genre</option>';
 
   categories.forEach((category) => {
     const option = `<option value="${category.id}">${category.category_name}</option>`;
@@ -133,60 +148,75 @@ async function loadCategories() {
   });
 }
 
-// Draw one post as text, with the buttons that its author is allowed to use
+// Draw one review as a card, with the buttons that its author is allowed to use
 function renderPost(item, post) {
-  const categoryName = post.category
-    ? post.category.category_name
-    : "No category";
+  item.className = "card";
+
+  const genre = post.category ? post.category.category_name : "Unfiled";
+  const colour = COVER_COLOURS[(post.categoryId - 1) % COVER_COLOURS.length];
+  const excerpt =
+    post.content.length > 150
+      ? `${post.content.slice(0, 150).trim()}...`
+      : post.content;
 
   item.innerHTML = `
-    <h3>${post.title}</h3>
-    <p>${post.content}</p>
-    <small>${categoryName} | by ${post.postedBy} on ${new Date(
-    post.createdOn
-  ).toLocaleString()}</small>
+    <div class="card-cover" style="background:${colour}">${genre}</div>
+    <p class="card-meta">${formatDate(post.createdOn)} / by ${post.postedBy} / ${genre}</p>
+    <h3 class="card-title">${post.title}</h3>
+    <p class="card-excerpt">${excerpt}</p>
   `;
 
-  // Only the author of the post sees the buttons
+  // Only the author of the review sees the buttons
   if (!currentUser || post.userId !== currentUser.id) {
     return;
   }
 
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
   // The delete question replaces the two buttons until the author answers
   if (post.id === confirmingDeleteId) {
-    const question = document.createElement("small");
-    question.textContent = "Delete this post?";
-    item.appendChild(question);
+    const question = document.createElement("span");
+    question.className = "question";
+    question.textContent = "Delete this review?";
+    actions.appendChild(question);
 
-    item.appendChild(makeButton("Yes, delete", () => deletePost(post.id)));
-    item.appendChild(
-      makeButton("Cancel", () => {
+    actions.appendChild(
+      makeButton("Yes, delete", "button", () => deletePost(post.id))
+    );
+    actions.appendChild(
+      makeButton("Cancel", "button ghost", () => {
         confirmingDeleteId = null;
         fetchPosts();
       })
     );
+    item.appendChild(actions);
     return;
   }
 
-  item.appendChild(
-    makeButton("Edit", () => {
+  actions.appendChild(
+    makeButton("Edit", "button ghost", () => {
       editingPostId = post.id;
       confirmingDeleteId = null;
       fetchPosts();
     })
   );
 
-  item.appendChild(
-    makeButton("Delete", () => {
+  actions.appendChild(
+    makeButton("Delete", "button ghost", () => {
       confirmingDeleteId = post.id;
       editingPostId = null;
       fetchPosts();
     })
   );
+
+  item.appendChild(actions);
 }
 
-// Draw one post as a form, so the author can change it on the page
+// Draw one review as a form, so the author can change it on the page
 function renderEditForm(item, post) {
+  item.className = "card editing";
+
   const options = categories
     .map(
       (category) =>
@@ -205,16 +235,20 @@ function renderEditForm(item, post) {
   item.querySelector(".edit-content").value = post.content;
   item.querySelector(".edit-category").value = post.categoryId;
 
-  item.appendChild(makeButton("Save", () => savePost(post.id)));
-  item.appendChild(
-    makeButton("Cancel", () => {
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(makeButton("Save", "button", () => savePost(post.id)));
+  actions.appendChild(
+    makeButton("Cancel", "button ghost", () => {
       editingPostId = null;
       fetchPosts();
     })
   );
+
+  item.appendChild(actions);
 }
 
-// Read the posts. The menu decides whether the server filters by category
+// Read the reviews. The menu decides whether the server filters by genre
 async function fetchPosts() {
   const categoryId = document.getElementById("filter-category").value;
   const address = categoryId
@@ -228,7 +262,7 @@ async function fetchPosts() {
   container.innerHTML = "";
 
   if (posts.length === 0) {
-    container.innerHTML = "<p>No posts in this category yet.</p>";
+    container.innerHTML = '<p class="empty">No reviews in this genre yet.</p>';
     return;
   }
 
@@ -245,12 +279,12 @@ async function fetchPosts() {
   });
 }
 
-// Write a new post. The server reads the author from the token
+// Write a new review. The server reads the author from the token
 async function createPost() {
   const categoryId = document.getElementById("post-category").value;
 
   if (!categoryId) {
-    showMessage("Choose a category first.");
+    showMessage("Choose a genre first.");
     return;
   }
 
@@ -267,17 +301,17 @@ async function createPost() {
   const data = await response.json();
 
   if (!response.ok) {
-    showMessage(data.message || "Unable to create the post");
+    showMessage(data.message || "Unable to publish the review");
     return;
   }
 
   document.getElementById("post-title").value = "";
   document.getElementById("post-content").value = "";
-  showMessage("Post created.");
+  showMessage("Review published.");
   fetchPosts();
 }
 
-// Send the edited post to the server. Only one edit form is open at a time
+// Send the edited review to the server. Only one edit form is open at a time
 async function savePost(id) {
   const response = await fetch(`${API}/posts/${id}`, {
     method: "PUT",
@@ -291,16 +325,16 @@ async function savePost(id) {
 
   if (!response.ok) {
     const data = await response.json();
-    showMessage(data.message || "Unable to update the post");
+    showMessage(data.message || "Unable to update the review");
     return;
   }
 
   editingPostId = null;
-  showMessage("Post updated.");
+  showMessage("Review updated.");
   fetchPosts();
 }
 
-// Delete one of your own posts, after the author answers the question
+// Delete one of your own reviews, after the author answers the question
 async function deletePost(id) {
   const response = await fetch(`${API}/posts/${id}`, {
     method: "DELETE",
@@ -309,16 +343,16 @@ async function deletePost(id) {
 
   if (!response.ok) {
     const data = await response.json();
-    showMessage(data.message || "Unable to delete the post");
+    showMessage(data.message || "Unable to delete the review");
     return;
   }
 
   confirmingDeleteId = null;
-  showMessage("Post deleted.");
+  showMessage("Review deleted.");
   fetchPosts();
 }
 
-// When the page opens, load the categories and the posts. If a token is already
+// When the page opens, load the genres and the reviews. If a token is already
 // in the browser, ask the server who it belongs to
 async function startPage() {
   await loadCategories();

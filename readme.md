@@ -1,6 +1,6 @@
-# Tech Blog
+# RESPAWN
 
-A blogging platform where anyone can read posts and filter them by category, and registered users can write, edit and delete their own posts.
+A game review blog. Anyone can read reviews and filter them by genre. Registered writers can publish, edit and delete their own reviews.
 
 - **Live app:** https://tech-blog-app-7z8h.onrender.com
 - **Repository:** https://github.com/MartimLou42/tech-blog-app
@@ -11,8 +11,8 @@ A blogging platform where anyone can read posts and filter them by category, and
 - Register, log in and log out using JWT authentication.
 - Passwords are hashed with bcrypt.
 - Anyone can read posts, with or without an account.
-- Filter posts by category.
-- Create, edit and delete posts. The server only lets you touch your own.
+- Filter reviews by genre.
+- Create, edit and delete reviews. The server only lets you touch your own.
 - The page updates from API responses without reloading.
 
 ## Built with
@@ -66,7 +66,7 @@ You need Node.js and MySQL installed.
 
 5. Open http://localhost:3001
 
-The seed creates two accounts, `test1@example.com` and `test2@example.com`. Both use the password `password123`.
+The seed creates two writers, `test1@example.com` (martim) and `test2@example.com` (jules). Both use the password `password123`. It also creates five genres and six reviews.
 
 ## Environment variables
 
