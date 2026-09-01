@@ -2,7 +2,7 @@
 
 A blogging platform where anyone can read posts and filter them by category, and registered users can write, edit and delete their own posts.
 
-- **Live app:** _add the Render URL here_
+- **Live app:** https://tech-blog-app-7z8h.onrender.com
 - **Repository:** https://github.com/MartimLou42/tech-blog-app
 - **Demo video:** _add the video link here_
 
