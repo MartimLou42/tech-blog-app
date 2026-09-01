@@ -1,6 +1,5 @@
 // Import required packages
 const express = require("express");
-const bodyParser = require("body-parser");
 const path = require("path");
 
 const sequelize = require("./config/connection");
@@ -8,7 +7,8 @@ const routes = require("./routes");
 
 // Initialize Express application
 const app = express();
-app.use(bodyParser.json());
+// Express reads JSON and form bodies itself, so no extra package is needed
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3001;
