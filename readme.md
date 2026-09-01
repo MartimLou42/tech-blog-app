@@ -5,11 +5,32 @@ A game review blog. Anyone can read reviews and filter them by genre. Registered
 - **Live app:** https://tech-blog-app-7z8h.onrender.com
 - **Repository:** https://github.com/MartimLou42/tech-blog-app
 
+## Try the live app
+
+The app is hosted on a free Render instance, so the very first page load can take up to a minute while the server wakes up. After that it is quick.
+
+Sign in with either seeded account:
+
+| Email | Password | Writer |
+| --- | --- | --- |
+| `test1@example.com` | `password123` | martim, wrote 3 of the reviews |
+| `test2@example.com` | `password123` | jules, wrote the other 3 |
+
+What to try, to see every feature:
+
+1. **Read** without signing in. All six reviews are public. Click a headline to open its own page.
+2. **Filter** with the Genre menu. Choosing "Horror" leaves two reviews.
+3. **Register** a new account, or sign in with `test1@example.com` above.
+4. **Create** a review with the form that appears after signing in.
+5. **Update** and **delete** using the Edit and Delete buttons on the cards.
+6. **Ownership:** signed in as martim, the Edit and Delete buttons only appear on martim's three reviews, never on jules's. The server returns 403 if you try anyway, so hiding the buttons is a convenience, not the rule itself.
+7. **Log out** with the button in the writing panel.
+
 ## Features
 
 - Register, log in and log out using JWT authentication.
 - Passwords are hashed with bcrypt.
-- Anyone can read posts, with or without an account.
+- Anyone can read reviews, with or without an account.
 - Filter reviews by genre.
 - Create, edit and delete reviews. The server only lets you touch your own.
 - The page updates from API responses without reloading.
