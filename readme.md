@@ -4,7 +4,6 @@ A game review blog. Anyone can read reviews and filter them by genre. Registered
 
 - **Live app:** https://tech-blog-app-7z8h.onrender.com
 - **Repository:** https://github.com/MartimLou42/tech-blog-app
-- **Demo video:** _add the video link here_
 
 ## Features
 
