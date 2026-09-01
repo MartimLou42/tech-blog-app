@@ -32,6 +32,8 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT,
     dialectOptions,
     logging: false,
+    // Free database hosts allow only a few connections at the same time
+    pool: { max: 3, min: 0, idle: 10000 },
   }
 );
 
