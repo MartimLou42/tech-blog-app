@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RESPAWN | Game reviews</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ff412e'/><text x='16' y='23' font-family='Helvetica,Arial' font-size='20' font-weight='bold' fill='%23fffef4' text-anchor='middle'>R</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -56,7 +58,7 @@
         </section>
 
         <!-- Anybody can read the reviews, with or without an account -->
-        <section class="reviews">
+        <section class="reviews" id="list-view">
             <div class="reviews-head">
                 <h2>Latest reviews</h2>
                 <div class="filter">
@@ -66,6 +68,9 @@
             </div>
             <div id="posts"></div>
         </section>
+
+        <!-- One full review. The address bar carries the id, so links work -->
+        <article class="detail hidden" id="detail-view"></article>
 
         <footer class="site-footer">
             <p>RESPAWN &middot; built with Node, Express, Sequelize and MySQL</p>

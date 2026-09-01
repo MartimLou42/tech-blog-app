@@ -331,3 +331,86 @@ select:focus {
     align-items: flex-start;
   }
 }
+
+/* ---------- Links inside reviews ---------- */
+.card-cover {
+  text-decoration: none;
+}
+
+.card-cover:hover {
+  filter: brightness(1.08);
+}
+
+.card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  text-decoration: underline;
+}
+
+.card-more {
+  margin: 10px 0 0;
+}
+
+.card-more a,
+.back a {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--coral);
+  text-decoration: none;
+}
+
+.card-more a:hover,
+.back a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- One full review ---------- */
+.detail {
+  max-width: 680px;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+
+.back {
+  margin: 0 0 20px;
+}
+
+.detail-cover {
+  aspect-ratio: 16 / 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: var(--ink);
+  margin-bottom: 20px;
+}
+
+.detail-title {
+  font-size: 38px;
+  line-height: 1.1;
+  color: var(--coral);
+  margin: 0 0 20px;
+}
+
+.detail-body p {
+  font-size: 17px;
+  line-height: 1.75;
+  margin: 0 0 20px;
+}
+
+@media (max-width: 700px) {
+  .detail-title {
+    font-size: 28px;
+  }
+}

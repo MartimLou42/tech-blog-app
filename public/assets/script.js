@@ -56,8 +56,7 @@ function buildHeaders() {
 function showLoggedIn(user) {
   currentUser = user;
   document.getElementById("current-username").textContent = user.username;
-  document.getElementById("auth-container").classList.add("hidden");
-  document.getElementById("app-container").classList.remove("hidden");
+  applyView();
 }
 
 // Show the parts of the page that a visitor without an account needs
@@ -67,8 +66,7 @@ function showLoggedOut() {
   editingPostId = null;
   confirmingDeleteId = null;
   localStorage.removeItem("authToken");
-  document.getElementById("auth-container").classList.remove("hidden");
-  document.getElementById("app-container").classList.add("hidden");
+  applyView();
 }
 
 // Create a new account
@@ -160,10 +158,11 @@ function renderPost(item, post) {
       : post.content;
 
   item.innerHTML = `
-    <div class="card-cover" style="background:${colour}">${genre}</div>
+    <a class="card-cover" href="#/review/${post.id}" style="background:${colour}">${genre}</a>
     <p class="card-meta">${formatDate(post.createdOn)} / by ${post.postedBy} / ${genre}</p>
-    <h3 class="card-title">${post.title}</h3>
+    <h3 class="card-title"><a href="#/review/${post.id}">${post.title}</a></h3>
     <p class="card-excerpt">${excerpt}</p>
+    <p class="card-more"><a href="#/review/${post.id}">Continue reading...</a></p>
   `;
 
   // Only the author of the review sees the buttons
@@ -352,8 +351,77 @@ async function deletePost(id) {
   fetchPosts();
 }
 
-// When the page opens, load the genres and the reviews. If a token is already
-// in the browser, ask the server who it belongs to
+// Show either the list of reviews or one full review. The account panels only
+// belong on the list, because a review page is for reading
+function applyView() {
+  const onDetail = readIdFromAddress() !== null;
+
+  document.getElementById("list-view").classList.toggle("hidden", onDetail);
+  document.getElementById("detail-view").classList.toggle("hidden", !onDetail);
+
+  const auth = document.getElementById("auth-container");
+  const write = document.getElementById("app-container");
+
+  auth.classList.toggle("hidden", onDetail || currentUser !== null);
+  write.classList.toggle("hidden", onDetail || currentUser === null);
+}
+
+// Read the review id out of an address like #/review/4. Return null on the list
+function readIdFromAddress() {
+  const match = window.location.hash.match(/^#\/review\/(\d+)$/);
+  return match ? match[1] : null;
+}
+
+// Draw one full review, with its whole text
+async function showOneReview(id) {
+  const container = document.getElementById("detail-view");
+  const response = await fetch(`${API}/posts/${id}`);
+
+  if (!response.ok) {
+    container.innerHTML = `
+      <p class="back"><a href="#/">Back to all reviews</a></p>
+      <h2 class="detail-title">Review not found</h2>
+    `;
+    return;
+  }
+
+  const post = await response.json();
+  const genre = post.category ? post.category.category_name : "Unfiled";
+  const colour = COVER_COLOURS[(post.categoryId - 1) % COVER_COLOURS.length];
+
+  // Keep the paragraph breaks that the writer typed
+  const paragraphs = post.content
+    .split("\n")
+    .filter((line) => line.trim() !== "")
+    .map((line) => `<p>${line}</p>`)
+    .join("");
+
+  container.innerHTML = `
+    <p class="back"><a href="#/">Back to all reviews</a></p>
+    <div class="detail-cover" style="background:${colour}">${genre}</div>
+    <p class="card-meta">${formatDate(post.createdOn)} / by ${post.postedBy} / ${genre}</p>
+    <h2 class="detail-title">${post.title}</h2>
+    <div class="detail-body">${paragraphs}</div>
+  `;
+}
+
+// Decide what to draw, from the address bar
+async function route() {
+  const id = readIdFromAddress();
+
+  applyView();
+
+  if (id) {
+    await showOneReview(id);
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  await fetchPosts();
+}
+
+// When the page opens, load the genres. If a token is already in the browser,
+// ask the server who it belongs to, then draw whatever the address asks for
 async function startPage() {
   await loadCategories();
 
@@ -369,7 +437,10 @@ async function startPage() {
     }
   }
 
-  fetchPosts();
+  route();
 }
+
+// The browser Back and Forward buttons change the address, so listen for it
+window.addEventListener("hashchange", route);
 
 startPage();

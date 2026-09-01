@@ -29,6 +29,10 @@ const seedDatabase = async () => {
     Category.create({ category_name: "Platformer" }),
   ]);
 
+  // Space the reviews a week apart so the blog looks like it has a history
+  const weeksAgo = (weeks) =>
+    new Date(Date.now() - weeks * 7 * 24 * 60 * 60 * 1000);
+
   // Create the reviews and connect each one to a writer and a genre
   await Post.bulkCreate([
     {
@@ -38,6 +42,7 @@ const seedDatabase = async () => {
       postedBy: martim.username,
       userId: martim.id,
       categoryId: roguelike.id,
+      createdOn: weeksAgo(0),
     },
     {
       title: "Baldur's Gate 3 still has not let me leave",
@@ -46,6 +51,7 @@ const seedDatabase = async () => {
       postedBy: jules.username,
       userId: jules.id,
       categoryId: rpg.id,
+      createdOn: weeksAgo(1),
     },
     {
       title: "Against the Storm is a spreadsheet that hugs you",
@@ -54,6 +60,7 @@ const seedDatabase = async () => {
       postedBy: martim.username,
       userId: martim.id,
       categoryId: strategy.id,
+      createdOn: weeksAgo(2),
     },
     {
       title: "Signalis is the best horror game nobody told you about",
@@ -62,6 +69,7 @@ const seedDatabase = async () => {
       postedBy: jules.username,
       userId: jules.id,
       categoryId: horror.id,
+      createdOn: weeksAgo(3),
     },
     {
       title: "Celeste is a mountain and also a mood",
@@ -70,6 +78,7 @@ const seedDatabase = async () => {
       postedBy: martim.username,
       userId: martim.id,
       categoryId: platformer.id,
+      createdOn: weeksAgo(4),
     },
     {
       title: "Dredge turns fishing into a bad idea",
@@ -78,6 +87,7 @@ const seedDatabase = async () => {
       postedBy: jules.username,
       userId: jules.id,
       categoryId: horror.id,
+      createdOn: weeksAgo(5),
     },
   ]);
 
